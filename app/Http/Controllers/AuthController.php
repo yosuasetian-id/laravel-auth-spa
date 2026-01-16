@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -16,8 +17,10 @@ class AuthController extends Controller
 
         $user = User::create($fields);
 
+        event(new Registered($user));
+
         return response()->json([
-            'message' => 'Register successful!',
+            'message' => 'Register successful! Check Your email verification!',
             'user' => $user
         ], 201);
     }
