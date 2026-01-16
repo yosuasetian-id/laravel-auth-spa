@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Password;
 
 class EmailVerificationController extends Controller
 {
@@ -29,7 +30,7 @@ class EmailVerificationController extends Controller
         event(new Verified($user));
 
         return response()->json([
-            'message' => 'Email verified successfully!'
+            'message' => 'Email verified successful!'
         ]);
     }
 
@@ -46,7 +47,26 @@ class EmailVerificationController extends Controller
         $user->sendEmailVerificationNotification();
 
         return response()->json([
-            'message' => 'Verification email resent successfully! Check Your email again!'
+            'message' => 'Verification email resent successful! Check Your email again!'
         ]);
+    }
+
+    public function sendLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json([
+                'message' => __($status)
+            ])
+            : response()->json([
+                'message' => __($status)
+            ], 400);
     }
 }

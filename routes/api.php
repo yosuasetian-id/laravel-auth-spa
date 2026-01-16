@@ -22,3 +22,6 @@ Route::post(
     '/email/resend',
     [EmailVerificationController::class, 'resend']
 )->middleware(['auth:sanctum', 'throttle:3,10']);
+
+Route::post('/forgot-password', [EmailVerificationController::class, 'sendLink'])->middleware('web');
+Route::post('/reset-password', [AuthController::class, 'reset'])->middleware('web')->name('password.reset');
