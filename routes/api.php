@@ -17,3 +17,8 @@ Route::get(
     '/email/verify/{id}/{hash}',
     [EmailVerificationController::class, 'verify']
 )->middleware(['signed'])->name('verification.verify');
+
+Route::post(
+    '/email/resend',
+    [EmailVerificationController::class, 'resend']
+)->middleware(['auth:sanctum', 'throttle:3,10']);
